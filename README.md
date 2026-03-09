@@ -1,148 +1,92 @@
-UART Tx-Rx Design in Verilog
+# UART Tx-Rx Design in Verilog
 
-A synthesizable UART (Universal Asynchronous Receiver/Transmitter) RTL implementation written in Verilog.
-The design includes a configurable baud rate generator, transmitter, receiver with 16× oversampling, and a seven-segment display interface for received data visualization. A simulation testbench is also provided for functional verification.
-
----
-
-Overview
-
-This project implements a full UART communication system suitable for FPGA-based digital design labs and RTL learning. The design supports serial transmission and reception of 8-bit data at 115200 baud using a 50 MHz system clock.
-
-The architecture consists of modular RTL components for clarity and reuse:
-
-- Baud rate generator
-- UART transmitter
-- UART receiver
-- Seven-segment display decoder
-- Top-level integration module
-- Testbench for simulation
-
-The transmitter sends 8-bit data serially, while the receiver reconstructs the data using 16× oversampling for improved reliability.
+A robust, synthesizable **Universal Asynchronous Receiver/Transmitter (UART)** RTL implementation. This project features a modular architecture including a baud rate generator, 16× oversampling receiver, and a seven-segment display interface for real-time data visualization on FPGA hardware.
 
 ---
 
-Features
+## 📌 Overview
 
-- Fully synthesizable Verilog RTL
-- 115200 baud UART communication
-- 16× oversampling receiver
-- Modular design structure
-- FSM-based transmitter and receiver
-- Seven-segment display output for received data
-- Self-checking simulation testbench
-- Compatible with FPGA workflows (Vivado / ModelSim / Icarus Verilog)
+This project implements a complete UART communication system designed for FPGA-based digital design labs and RTL learning. It facilitates reliable 8-bit serial data transfer at **115200 baud** using a **50 MHz** system clock.
+
+
+
+### Key Architecture Components:
+* **Baud Rate Generator:** Precise clock division for Tx and Rx.
+* **UART Transmitter:** FSM-based parallel-to-serial converter.
+* **UART Receiver:** 16× oversampling serial-to-parallel converter.
+* **Seven-Segment Decoder:** Binary-to-decimal visualization logic.
+* **Top-Level Integration:** Modular structural Verilog connecting all blocks.
 
 ---
 
-Project Structure
+## 🚀 Features
 
+* **Synthesizable RTL:** Written in standard Verilog, compatible with Vivado, Quartus, and Diamond.
+* **High-Speed Communication:** Default 115200 baud rate.
+* **High Reliability:** 16× oversampling receiver for improved timing margin and noise robustness.
+* **FSM-Based Design:** Clear, modular Finite State Machines for both Tx and Rx.
+* **Visual Debugging:** Integrated Seven-Segment display output for received data.
+* **Verification Ready:** Includes a self-checking testbench for functional simulation.
+
+---
+
+## 📂 Project Structure
+
+```text
 UART-Verilog/
-│
-├── uart.v            # Complete UART RTL design
-├── uart_tb.v         # Simulation testbench
-├── README.md         # Project documentation
+├── uart.v            # Core RTL design (Top, Tx, Rx, Baud, Seg-7)
+├── uart_tb.v         # Self-checking simulation testbench
+└── README.md         # Project documentation
+```
+---
+
+## 🛠 Module Descriptions
+
+### 1. UART Top Module (`uart`)
+The top-level entity that structuraly integrates the transmitter, receiver, baud rate generator, and the seven-segment display logic. It acts as the primary interface for FPGA pins (Clock, Reset, Tx, Rx, and Display Seven-Segments).
+
+### 2. Baud Rate Generator (`baudrate`)
+A frequency divider that generates the precise timing pulses required for synchronized communication.
+* **System Clock:** 50 MHz
+* **UART Baud Rate:** 115200
+* **Receiver Sampling:** 16× oversampling (provides a sampling pulse at 1.8432 MHz).
+
+### 3. UART Transmitter (`transmitter`)
+A Finite State Machine (FSM) that converts 8-bit parallel data into a serial bitstream.
+* **States:** `IDLE` → `START` → `DATA` → `STOP`
+* **Frame Format:**
+
+    > `0 (Start) | D0 | D1 | D2 | D3 | D4 | D5 | D6 | D7 | 1 (Stop)`
+
+### 4. UART Receiver (`receiver`)
+The receiver uses **16× oversampling** to sample the incoming `Rx` signal. By counting 8 clock pulses after a falling edge is detected, it samples the bit at its theoretical center to ensure maximum timing margin and noise immunity.
+* **States:** `IDLE` → `START` → `DATA` → `STOP`
+* **Output:** Asserts a `data_ready` flag once a full byte is reconstructed.
+
+### 5. Seven Segment Decoder (`seven_segment_decoder`)
+To make the hardware implementation interactive, this module converts the 8-bit binary received data into a format compatible with common-anode or common-cathode 7-segment displays, showing the decimal value (0-255).
 
 ---
 
-Module Description
+## 💻 Simulation & Verification
 
-1. UART Top Module ("uart")
+The project includes a self-checking testbench (`uart_tb.v`) that performs a **loopback test**. It connects the Transmitter output (`Tx`) directly to the Receiver input (`Rx`) to verify data integrity.
 
-Integrates all functional blocks including transmitter, receiver, baud generator, and seven-segment display logic.
 
-2. Baud Rate Generator ("baudrate")
 
-Generates clock enable signals for both transmitter and receiver based on the system clock.
+## Tools used
 
-- System clock: 50 MHz
-- UART baud rate: 115200
-- Receiver oversampling: 16×
+-Xilinx Vivado
+-Icarus verilog
+-GTKWave
 
-3. UART Transmitter ("transmitter")
+## 👤 Author
 
-Finite State Machine (FSM) controlling serial data transmission.
-
-States:
-
-- "IDLE"
-- "START"
-- "DATA"
-- "STOP"
-
-Frame format:
-
-Start Bit | 8 Data Bits | Stop Bit
-    0          LSB→MSB       1
-
-4. UART Receiver ("receiver")
-
-Receives serial data using 16× oversampling to improve timing robustness.
-
-States:
-
-- "START"
-- "DATA"
-- "STOP"
-
-The receiver asserts a ready flag when valid data is captured.
-
-5. Seven Segment Decoder ("seven_segment_decoder")
-
-Converts received binary data into decimal digits (hundreds, tens, units) for seven-segment display output.
+**Nagendra Kudva** Electronics and Communication Engineering  
+Manipal Institute of Technology  
 
 ---
 
-Simulation
+## 📄 License
 
-The testbench performs a UART loopback test:
-
-Tx → Rx
-
-Steps executed:
-
-1. Generate 50 MHz clock
-2. Apply reset
-3. Transmit a byte
-4. Loop transmitter output to receiver
-5. Verify received data
-
-Expected Console Output
-
-Received Data = 123
-UART TEST PASSED
-
----
-
-
-Applications
-
-This project can be used for:
-
-- FPGA serial communication
-- Embedded system debugging
-- Digital design coursework
-- RTL verification practice
-- UART interface learning
-
----
-
-Tools Used:
-
-- Xilinx Vivado
-- Icarus Verilog
-- GTKWave
-
----
-
-Author
-
-Nagendra Kudva
-Electronics and Communication Engineering
-Manipal Institute of Technology
-
----
-
-License
-
-This project is open source and available under the MIT License.
+This project is open-source and available under the **MIT License**.
