@@ -36,6 +36,7 @@ This project implements a complete UART communication system designed for FPGA-b
 UART-Verilog/
 ├── uart.v            # Core RTL design (Top, Tx, Rx, Baud, Seg-7)
 ├── uart_tb.v         # Self-checking simulation testbench
+├── outputs           # output waveforms
 └── README.md         # Project documentation
 ```
 ---
