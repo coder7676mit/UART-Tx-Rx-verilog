@@ -76,9 +76,9 @@ The project includes a self-checking testbench (`uart_tb.v`) that performs a **l
 
 ## Tools used
 
--Xilinx Vivado
--Icarus verilog
--GTKWave
+* Xilinx Vivado
+* Icarus verilog
+* GTKWave
 
 ## 👤 Author
 
