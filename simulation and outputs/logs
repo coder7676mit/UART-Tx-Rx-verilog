@@ -1,1 +1,4 @@
-
+run 200 us
+Sending Data = 123
+Received Data = 123
+UART TEST PASSED
