@@ -1,6 +1,4 @@
-# UART-Tx-Rx-verilog
-
-UART Transceiver Design in Verilog
+UART Tx-Rx Design in Verilog
 
 A synthesizable UART (Universal Asynchronous Receiver/Transmitter) RTL implementation written in Verilog.
 The design includes a configurable baud rate generator, transmitter, receiver with 16× oversampling, and a seven-segment display interface for received data visualization. A simulation testbench is also provided for functional verification.
@@ -75,4 +73,76 @@ States:
 Frame format:
 
 Start Bit | 8 Data Bits | Stop Bit
-    0          LSB→MSB
+    0          LSB→MSB       1
+
+4. UART Receiver ("receiver")
+
+Receives serial data using 16× oversampling to improve timing robustness.
+
+States:
+
+- "START"
+- "DATA"
+- "STOP"
+
+The receiver asserts a ready flag when valid data is captured.
+
+5. Seven Segment Decoder ("seven_segment_decoder")
+
+Converts received binary data into decimal digits (hundreds, tens, units) for seven-segment display output.
+
+---
+
+Simulation
+
+The testbench performs a UART loopback test:
+
+Tx → Rx
+
+Steps executed:
+
+1. Generate 50 MHz clock
+2. Apply reset
+3. Transmit a byte
+4. Loop transmitter output to receiver
+5. Verify received data
+
+Expected Console Output
+
+Received Data = 123
+UART TEST PASSED
+
+---
+
+
+Applications
+
+This project can be used for:
+
+- FPGA serial communication
+- Embedded system debugging
+- Digital design coursework
+- RTL verification practice
+- UART interface learning
+
+---
+
+Tools Used:
+
+- Xilinx Vivado
+- Icarus Verilog
+- GTKWave
+
+---
+
+Author
+
+Nagendra Kudva
+Electronics and Communication Engineering
+Manipal Institute of Technology
+
+---
+
+License
+
+This project is open source and available under the MIT License.
