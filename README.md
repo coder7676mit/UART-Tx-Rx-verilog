@@ -1,6 +1,6 @@
 # UART Tx-Rx Design in Verilog
 
-A robust, synthesizable **Universal Asynchronous Receiver/Transmitter (UART)** RTL implementation. This project features a modular architecture including a baud rate generator, 16× oversampling receiver, and a seven-segment display interface for real-time data visualization on FPGA hardware.
+A robust, synthesizable **Universal Asynchronous Receiver/Transmitter (UART)** RTL implementation. This project features a modular architecture including a baud rate generator, 16× oversampling receiver, and a seven-segment display interface for real-time data visualization using **Xilinx Vivado**
 
 ---
 
